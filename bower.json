@@ -1,0 +1,24 @@
+{
+  "name": "sdoku_example",
+  "description": "sdoku example",
+  "main": "index.js",
+  "authors": [
+    "kimorkim <kimorkim@gmail.com>"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/ossas/sdoku_example",
+  "moduleType": [
+    "node"
+  ],
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "react": "~0.14.6",
+    "Snap.svg": "snap.svg#~0.4.1"
+  }
+}
