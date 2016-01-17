@@ -4,14 +4,14 @@ import './index.less';
 
 export default class Gameview extends Component{
     _makeGame() {
-        const gameData = sdm.getGameData();
+        const gameData = sdm.getGameData('random');
         let boxes = [];
 
         for(let i = 0; i < 9; i++) {
             boxes.push(
                 <Box
                     key={i}
-                    data={gameData[i]}
+                    data={gameData.data[i]}
                 >
                 </Box>
             );

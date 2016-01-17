@@ -19697,13 +19697,13 @@
 	    _createClass(Gameview, [{
 	        key: '_makeGame',
 	        value: function _makeGame() {
-	            var gameData = sdm.getGameData();
+	            var gameData = sdm.getGameData('random');
 	            var boxes = [];
 
 	            for (var i = 0; i < 9; i++) {
 	                boxes.push(_react2.default.createElement(_box2.default, {
 	                    key: i,
-	                    data: gameData[i]
+	                    data: gameData.data[i]
 	                }));
 	            }
 
@@ -19887,7 +19887,7 @@
 
 
 	// module
-	exports.push([module.id, "/* prefix 영역 */\n.flex-box {\n  display: -webkit-box;\n  display: -moz-box;\n  display: -ms-flexbox;\n  display: -webkit-flex;\n  display: flex;\n  -webkit-flex-flow: row wrap;\n  justify-content: space-around;\n}\n/* prefix 영역 */\nhtml,\nbody {\n  width: 100%;\n  height: 100%;\n  margin: 0;\n  padding: 0;\n  display: -webkit-box;\n  display: -moz-box;\n  display: -ms-flexbox;\n  display: -webkit-flex;\n  display: flex;\n  -webkit-flex-flow: row wrap;\n  justify-content: space-around;\n  justify-content: center;\n  align-items: center;\n}\n.game {\n  display: -webkit-box;\n  display: -moz-box;\n  display: -ms-flexbox;\n  display: -webkit-flex;\n  display: flex;\n  -webkit-flex-flow: row wrap;\n  justify-content: space-around;\n  width: 450px;\n}\n.box {\n  display: -webkit-box;\n  display: -moz-box;\n  display: -ms-flexbox;\n  display: -webkit-flex;\n  display: flex;\n  -webkit-flex-flow: row wrap;\n  justify-content: space-around;\n  width: 150px;\n  -moz-box-shadow: inset 0 0 1px #ccc;\n  -webkit-box-shadow: inset 0 0 1px #ccc;\n  box-shadow: inset 0 0 1px #ccc;\n}\n.cell {\n  width: 50px;\n  height: 50px;\n  align-items: center;\n  display: flex;\n  justify-content: center;\n}\n.box:nth-child(even) {\n  background: #ccc;\n}\n.box:nth-child(even) .cell:nth-child(odd) {\n  background: rgba(1, 1, 1, 0.1);\n}\n.box:nth-child(odd) .cell:nth-child(even) {\n  background: rgba(1, 1, 1, 0.1);\n}\n", ""]);
+	exports.push([module.id, "/* prefix 영역 */\n.flex-box {\n  display: -webkit-box;\n  display: -moz-box;\n  display: -ms-flexbox;\n  display: -webkit-flex;\n  display: flex;\n  -webkit-flex-flow: row wrap;\n  justify-content: space-around;\n}\n/* prefix 영역 */\n* {\n  -webkit-user-select: none;\n  /* Chrome all / Safari all */\n  -moz-user-select: none;\n  /* Firefox all */\n  -ms-user-select: none;\n  /* IE 10+ */\n  user-select: none;\n  /* Likely future */\n}\nhtml,\nbody {\n  width: 100%;\n  height: 100%;\n  margin: 0;\n  padding: 0;\n  display: -webkit-box;\n  display: -moz-box;\n  display: -ms-flexbox;\n  display: -webkit-flex;\n  display: flex;\n  -webkit-flex-flow: row wrap;\n  justify-content: space-around;\n  justify-content: center;\n  align-items: center;\n}\n.game {\n  display: -webkit-box;\n  display: -moz-box;\n  display: -ms-flexbox;\n  display: -webkit-flex;\n  display: flex;\n  -webkit-flex-flow: row wrap;\n  justify-content: space-around;\n  width: 450px;\n}\n.box {\n  display: -webkit-box;\n  display: -moz-box;\n  display: -ms-flexbox;\n  display: -webkit-flex;\n  display: flex;\n  -webkit-flex-flow: row wrap;\n  justify-content: space-around;\n  width: 150px;\n  -moz-box-shadow: inset 0 0 1px #ccc;\n  -webkit-box-shadow: inset 0 0 1px #ccc;\n  box-shadow: inset 0 0 1px #ccc;\n}\n.cell {\n  cursor: pointer;\n  width: 50px;\n  height: 50px;\n  align-items: center;\n  display: flex;\n  justify-content: center;\n}\n.box:nth-child(even) {\n  background: #ccc;\n}\n.cell:nth-child(odd) {\n  background: rgba(1, 1, 1, 0.1);\n}\n", ""]);
 
 	// exports
 
