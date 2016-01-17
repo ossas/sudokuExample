@@ -19,6 +19,6 @@
   ],
   "dependencies": {
     "react": "~0.14.6",
-    "Snap.svg": "snap.svg#~0.4.1"
+    "sdoku_maker": "~1.0.1"
   }
 }

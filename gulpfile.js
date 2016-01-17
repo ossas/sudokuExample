@@ -16,19 +16,19 @@ var paths = {
 };
 
 
-gulp.task('less', function () {
-  	return gulp.src(paths.less)
-      	.pipe(sourcemaps.init())
-        .pipe(less())
-        .pipe(minifyCSS())
-        .pipe(sourcemaps.write('.'))
-        .pipe(gulp.dest('dist/css'));
-});
+// gulp.task('less', function () {
+//   	return gulp.src(paths.less)
+//       	.pipe(sourcemaps.init())
+//         .pipe(less())
+//         .pipe(minifyCSS())
+//         .pipe(sourcemaps.write('.'))
+//         .pipe(gulp.dest('dist/css'));
+// });
 
 gulp.task('scripts', function(callback) {
 
     // run webpack
-    webpack({
+    return webpack({
         watch: true,
         errorDetails: true,
         entry: {
@@ -41,7 +41,7 @@ gulp.task('scripts', function(callback) {
         module: {
             loaders: [
                 { test: /\.css$/, loader: "style!css" },
-                { test: /\.less$/, loader: "style!less" },
+                { test: /\.less$/, loader: "style-loader!css-loader!less-loader" },
                 { test: /\.js$/, exclude: /node_modules/, loaders: ["babel-loader"] }
             ]
         }
@@ -51,17 +51,16 @@ gulp.task('scripts', function(callback) {
         gutil.log("[webpack]", stats.toString({
             // output options
         }));
-        callback();
+        // callback();
     });
 });
 
 // Rerun the task when a file changes 
 gulp.task('watch', function() {
-  	gulp.watch(paths.scripts, ['scripts']);
-    gulp.watch(paths.less, ['less']);
+  	// gulp.watch(paths.scripts, ['scripts']);
 });
  
 // The default task (called when you run `gulp` from cli) 
-gulp.task('default', ['watch', 'scripts', 'less']);
+gulp.task('default', ['scripts']);
 
-gulp.task('deploy', ['scripts', 'less']);
+gulp.task('deploy', ['scripts']);
