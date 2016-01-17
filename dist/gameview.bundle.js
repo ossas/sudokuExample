@@ -19685,25 +19685,38 @@
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
+	var _gameView = undefined;
+	function cloneObject(object) {
+	    return JSON.parse(JSON.stringify(object));
+	}
+
 	var Gameview = function (_Component) {
 	    _inherits(Gameview, _Component);
 
 	    function Gameview() {
 	        _classCallCheck(this, Gameview);
 
-	        return _possibleConstructorReturn(this, Object.getPrototypeOf(Gameview).apply(this, arguments));
+	        var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Gameview).call(this));
+
+	        _gameView = _this;
+	        var gameData = sdm.getGameData('random');
+	        _this.state = {
+	            gameData: gameData,
+	            userData: cloneObject(gameData.data)
+	        };
+	        return _this;
 	    }
 
 	    _createClass(Gameview, [{
 	        key: '_makeGame',
 	        value: function _makeGame() {
-	            var gameData = sdm.getGameData('random');
 	            var boxes = [];
 
 	            for (var i = 0; i < 9; i++) {
 	                boxes.push(_react2.default.createElement(_box2.default, {
 	                    key: i,
-	                    data: gameData.data[i],
+	                    position: i,
+	                    data: this.state.gameData.data[i],
 	                    event: this.setValueEvent
 	                }));
 	            }
@@ -19713,13 +19726,22 @@
 	    }, {
 	        key: 'setValueEvent',
 	        value: function setValueEvent(cell) {
-	            var value = prompt('set');
+	            var value = Number(prompt('set'));
 
 	            if (value >= 1 && value <= 9) {
 	                cell.setState({
-	                    value: Number(value)
+	                    value: value
 	                });
+
+	                var _cell$props = cell.props;
+	                var _i = _cell$props._i;
+	                var _j = _cell$props._j;
+	                var _k = _cell$props._k;
+
+	                _gameView.state.userData[_i][_j][_k] = value;
 	            }
+
+	            console.log(_gameView.state.userData);
 	        }
 	    }, {
 	        key: 'render',
@@ -19770,10 +19792,10 @@
 	var Box = function (_Component) {
 		_inherits(Box, _Component);
 
-		function Box() {
+		function Box(props) {
 			_classCallCheck(this, Box);
 
-			return _possibleConstructorReturn(this, Object.getPrototypeOf(Box).apply(this, arguments));
+			return _possibleConstructorReturn(this, Object.getPrototypeOf(Box).call(this, props));
 		}
 
 		_createClass(Box, [{
@@ -19786,6 +19808,9 @@
 							_cell2.default,
 							{
 								key: '' + i + j,
+								_i: this.props.position,
+								_j: i,
+								_k: j,
 								value: this.props.data[i][j],
 								event: this.props.event
 							},

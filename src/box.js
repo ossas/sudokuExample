@@ -3,6 +3,9 @@ import Cell from './cell';
 import './index.less';
 
 export default class Box extends Component{
+	constructor(props) {
+		super(props);
+	}
 
 	_getCells() {
 		let Cells = [];
@@ -11,6 +14,9 @@ export default class Box extends Component{
 				Cells.push(
 					<Cell
 						key={''+ i + j}
+						_i= {this.props.position}
+						_j= {i}
+						_k= {j}
 						value={this.props.data[i][j]}
 						event={this.props.event}
 					>
