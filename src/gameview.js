@@ -12,19 +12,29 @@ export default class Gameview extends Component{
                 <Box
                     key={i}
                     data={gameData.data[i]}
+                    event={this.setValueEvent}
                 >
                 </Box>
             );
         }
 
-        console.log(boxes);
-
         return boxes;
+    }
+
+    setValueEvent(cell) {
+        var value = prompt('set');
+
+        if(value >= 1 && value <= 9) {
+            cell.setState({
+                value : Number(value)
+            })
+        }
+
     }
 
 	render() {
 		return (
-			<div className='game'>
+			<div className='game' >
                 {this._makeGame()}
 			</div>
 		);

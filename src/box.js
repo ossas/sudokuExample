@@ -12,6 +12,7 @@ export default class Box extends Component{
 					<Cell
 						key={''+ i + j}
 						value={this.props.data[i][j]}
+						event={this.props.event}
 					>
 						{i}
 					</Cell>

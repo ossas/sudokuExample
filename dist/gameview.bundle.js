@@ -19703,13 +19703,23 @@
 	            for (var i = 0; i < 9; i++) {
 	                boxes.push(_react2.default.createElement(_box2.default, {
 	                    key: i,
-	                    data: gameData.data[i]
+	                    data: gameData.data[i],
+	                    event: this.setValueEvent
 	                }));
 	            }
 
-	            console.log(boxes);
-
 	            return boxes;
+	        }
+	    }, {
+	        key: 'setValueEvent',
+	        value: function setValueEvent(cell) {
+	            var value = prompt('set');
+
+	            if (value >= 1 && value <= 9) {
+	                cell.setState({
+	                    value: Number(value)
+	                });
+	            }
 	        }
 	    }, {
 	        key: 'render',
@@ -19776,7 +19786,8 @@
 							_cell2.default,
 							{
 								key: '' + i + j,
-								value: this.props.data[i][j]
+								value: this.props.data[i][j],
+								event: this.props.event
 							},
 							i
 						));
@@ -19830,19 +19841,29 @@
 	var Cell = function (_Component) {
 		_inherits(Cell, _Component);
 
-		function Cell() {
+		function Cell(props) {
 			_classCallCheck(this, Cell);
 
-			return _possibleConstructorReturn(this, Object.getPrototypeOf(Cell).apply(this, arguments));
+			var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Cell).call(this, props));
+
+			_this.state = { value: props.value };
+			return _this;
 		}
 
 		_createClass(Cell, [{
+			key: 'clickItem',
+			value: function clickItem(e) {
+				if (!this.props.value) {
+					this.props.event(this);
+				}
+			}
+		}, {
 			key: 'render',
 			value: function render() {
 				return _react2.default.createElement(
 					'div',
-					{ className: 'cell' },
-					this.props.value
+					{ className: 'cell', onClick: this.clickItem.bind(this) },
+					this.state.value
 				);
 			}
 		}]);
