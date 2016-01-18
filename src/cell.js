@@ -7,9 +7,9 @@ export default class Cell extends Component{
 	    this.state = {value: props.value};
 	}
 
-	clickItem(e) {
+	clickItem(...args) {
 		if(!this.props.value) {
-			this.props.event(this);
+			this.props.event(this, ...args);
 		}
 	}
 

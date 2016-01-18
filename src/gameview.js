@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import Box from './box';
 import './index.less';
 
-let _gameView;
+
 function cloneObject(object) {
     return JSON.parse(JSON.stringify(object))
 }
@@ -10,18 +10,16 @@ function cloneObject(object) {
 export default class Gameview extends Component{
     constructor() {
         super();
-        _gameView = this;
         const gameData = sdm.getGameData('random');
         this.state = {
             gameData: gameData,
             userData : cloneObject(gameData.data)
         };
-    }
-
-    
+    }    
 
     _makeGame() {
         let boxes = [];
+        let boundClick = this.setValueEvent.bind(this);
 
         for(let i = 0; i < 9; i++) {
             boxes.push(
@@ -29,7 +27,7 @@ export default class Gameview extends Component{
                     key={i}
                     position={i}
                     data={this.state.gameData.data[i]}
-                    event={this.setValueEvent}
+                    event={boundClick}
                 >
                 </Box>
             );
@@ -47,11 +45,8 @@ export default class Gameview extends Component{
             })
 
             let {_i, _j, _k} = cell.props;
-            _gameView.state.userData[_i][_j][_k] = value;
+            this.state.userData[_i][_j][_k] = value;
         }
-
-        console.log(_gameView.state.userData);
-
     }
 
 	render() {

@@ -19685,7 +19685,6 @@
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-	var _gameView = undefined;
 	function cloneObject(object) {
 	    return JSON.parse(JSON.stringify(object));
 	}
@@ -19698,7 +19697,6 @@
 
 	        var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Gameview).call(this));
 
-	        _gameView = _this;
 	        var gameData = sdm.getGameData('random');
 	        _this.state = {
 	            gameData: gameData,
@@ -19711,13 +19709,14 @@
 	        key: '_makeGame',
 	        value: function _makeGame() {
 	            var boxes = [];
+	            var boundClick = this.setValueEvent.bind(this);
 
 	            for (var i = 0; i < 9; i++) {
 	                boxes.push(_react2.default.createElement(_box2.default, {
 	                    key: i,
 	                    position: i,
 	                    data: this.state.gameData.data[i],
-	                    event: this.setValueEvent
+	                    event: boundClick
 	                }));
 	            }
 
@@ -19738,10 +19737,8 @@
 	                var _j = _cell$props._j;
 	                var _k = _cell$props._k;
 
-	                _gameView.state.userData[_i][_j][_k] = value;
+	                this.state.userData[_i][_j][_k] = value;
 	            }
-
-	            console.log(_gameView.state.userData);
 	        }
 	    }, {
 	        key: 'render',
@@ -19877,9 +19874,15 @@
 
 		_createClass(Cell, [{
 			key: 'clickItem',
-			value: function clickItem(e) {
+			value: function clickItem() {
 				if (!this.props.value) {
-					this.props.event(this);
+					var _props;
+
+					for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+						args[_key] = arguments[_key];
+					}
+
+					(_props = this.props).event.apply(_props, [this].concat(args));
 				}
 			}
 		}, {
