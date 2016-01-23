@@ -10,7 +10,7 @@ function cloneObject(object) {
 export default class Gameview extends Component{
     constructor() {
         super();
-        const gameData = sdm.getGameData('random');
+        let gameData = sdm.getGameData('random');
         this.state = {
             gameData: gameData,
             userData : cloneObject(gameData.data)
