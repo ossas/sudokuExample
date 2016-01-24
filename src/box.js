@@ -13,6 +13,7 @@ export default class Box extends Component{
 			for(let j = 0; j < 3; j++) {
 				Cells.push(
 					<Cell
+						ref={''+ i + j}
 						key={''+ i + j}
 						_i= {this.props.position}
 						_j= {i}
