@@ -10,10 +10,11 @@ function cloneObject(object) {
 export default class Gameview extends Component{
     constructor() {
         super();
-        const gameData = sdm.getGameData('random');
+        let gameData = sdm.getGameData('random');
         this.state = {
             gameData: gameData,
-            userData : cloneObject(gameData.data)
+            userData: cloneObject(gameData.data),
+            failCells: []
         };
     }    
 
@@ -24,6 +25,7 @@ export default class Gameview extends Component{
         for(let i = 0; i < 9; i++) {
             boxes.push(
                 <Box
+                    ref={i}
                     key={i}
                     position={i}
                     data={this.state.gameData.data[i]}
@@ -46,6 +48,44 @@ export default class Gameview extends Component{
 
             let {_i, _j, _k} = cell.props;
             this.state.userData[_i][_j][_k] = value;
+
+            var check_data = sdm.gameDataCheck(this.state.userData);
+
+            this.state.failCells.forEach(function (cell) {
+                cell.setState({
+                    isFail: false
+                });
+            });
+
+            if(check_data.state === 'fail') {
+                for(let key in check_data.box) {
+                    var coord = check_data.box[key];
+                    var cell = this.refs[coord._i].refs['' + coord._j + coord._k];
+                    cell.setState({
+                        isFail : true
+                    });
+                    this.state.failCells.push(cell);
+                }
+                for(let key in check_data.rows) {
+                    var coord = check_data.rows[key];
+                    var cell = this.refs[coord._i].refs['' + coord._j + coord._k];
+                    cell.setState({
+                        isFail : true
+                    });
+                    this.state.failCells.push(cell);
+                }
+                for(let key in check_data.cols) {
+                    var coord = check_data.cols[key];
+                    var cell = this.refs[coord._i].refs['' + coord._j + coord._k];
+                    cell.setState({
+                        isFail : true
+                    });
+                    this.state.failCells.push(cell);
+                }
+
+            } else if(check_data.state === 'complete') {
+                alert('게임완료');
+            }
         }
     }
 

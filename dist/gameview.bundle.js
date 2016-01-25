@@ -19700,7 +19700,8 @@
 	        var gameData = sdm.getGameData('random');
 	        _this.state = {
 	            gameData: gameData,
-	            userData: cloneObject(gameData.data)
+	            userData: cloneObject(gameData.data),
+	            failCells: []
 	        };
 	        return _this;
 	    }
@@ -19713,6 +19714,7 @@
 
 	            for (var i = 0; i < 9; i++) {
 	                boxes.push(_react2.default.createElement(_box2.default, {
+	                    ref: i,
 	                    key: i,
 	                    position: i,
 	                    data: this.state.gameData.data[i],
@@ -19738,6 +19740,43 @@
 	                var _k = _cell$props._k;
 
 	                this.state.userData[_i][_j][_k] = value;
+
+	                var check_data = sdm.gameDataCheck(this.state.userData);
+
+	                this.state.failCells.forEach(function (cell) {
+	                    cell.setState({
+	                        isFail: false
+	                    });
+	                });
+
+	                if (check_data.state === 'fail') {
+	                    for (var key in check_data.box) {
+	                        var coord = check_data.box[key];
+	                        var cell = this.refs[coord._i].refs['' + coord._j + coord._k];
+	                        cell.setState({
+	                            isFail: true
+	                        });
+	                        this.state.failCells.push(cell);
+	                    }
+	                    for (var key in check_data.rows) {
+	                        var coord = check_data.rows[key];
+	                        var cell = this.refs[coord._i].refs['' + coord._j + coord._k];
+	                        cell.setState({
+	                            isFail: true
+	                        });
+	                        this.state.failCells.push(cell);
+	                    }
+	                    for (var key in check_data.cols) {
+	                        var coord = check_data.cols[key];
+	                        var cell = this.refs[coord._i].refs['' + coord._j + coord._k];
+	                        cell.setState({
+	                            isFail: true
+	                        });
+	                        this.state.failCells.push(cell);
+	                    }
+	                } else if (check_data.state === 'complete') {
+	                    alert('게임완료');
+	                }
 	            }
 	        }
 	    }, {
@@ -19804,6 +19843,7 @@
 						Cells.push(_react2.default.createElement(
 							_cell2.default,
 							{
+								ref: '' + i + j,
 								key: '' + i + j,
 								_i: this.props.position,
 								_j: i,
@@ -19868,11 +19908,24 @@
 
 			var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Cell).call(this, props));
 
-			_this.state = { value: props.value };
+			_this.state = {
+				value: props.value,
+				isFail: false
+			};
 			return _this;
 		}
 
 		_createClass(Cell, [{
+			key: 'getClassName',
+			value: function getClassName() {
+				var class_name = 'cell';
+				if (this.state.isFail && !this.props.value) {
+					class_name += ' fail';
+				}
+
+				return class_name;
+			}
+		}, {
 			key: 'clickItem',
 			value: function clickItem() {
 				if (!this.props.value) {
@@ -19890,7 +19943,7 @@
 			value: function render() {
 				return _react2.default.createElement(
 					'div',
-					{ className: 'cell', onClick: this.clickItem.bind(this) },
+					{ className: this.getClassName(), onClick: this.clickItem.bind(this) },
 					this.state.value
 				);
 			}
@@ -19936,7 +19989,7 @@
 
 
 	// module
-	exports.push([module.id, "/* prefix 영역 */\n.flex-box {\n  display: -webkit-box;\n  display: -moz-box;\n  display: -ms-flexbox;\n  display: -webkit-flex;\n  display: flex;\n  -webkit-flex-flow: row wrap;\n  justify-content: space-around;\n}\n/* prefix 영역 */\n* {\n  -webkit-user-select: none;\n  /* Chrome all / Safari all */\n  -moz-user-select: none;\n  /* Firefox all */\n  -ms-user-select: none;\n  /* IE 10+ */\n  user-select: none;\n  /* Likely future */\n}\nhtml,\nbody {\n  width: 100%;\n  height: 100%;\n  margin: 0;\n  padding: 0;\n  display: -webkit-box;\n  display: -moz-box;\n  display: -ms-flexbox;\n  display: -webkit-flex;\n  display: flex;\n  -webkit-flex-flow: row wrap;\n  justify-content: space-around;\n  justify-content: center;\n  align-items: center;\n}\n.game {\n  display: -webkit-box;\n  display: -moz-box;\n  display: -ms-flexbox;\n  display: -webkit-flex;\n  display: flex;\n  -webkit-flex-flow: row wrap;\n  justify-content: space-around;\n  width: 450px;\n}\n.box {\n  display: -webkit-box;\n  display: -moz-box;\n  display: -ms-flexbox;\n  display: -webkit-flex;\n  display: flex;\n  -webkit-flex-flow: row wrap;\n  justify-content: space-around;\n  width: 150px;\n  -moz-box-shadow: inset 0 0 1px #ccc;\n  -webkit-box-shadow: inset 0 0 1px #ccc;\n  box-shadow: inset 0 0 1px #ccc;\n}\n.cell {\n  cursor: pointer;\n  width: 50px;\n  height: 50px;\n  align-items: center;\n  display: flex;\n  justify-content: center;\n}\n.box:nth-child(even) {\n  background: #ccc;\n}\n.cell:nth-child(odd) {\n  background: rgba(1, 1, 1, 0.1);\n}\n", ""]);
+	exports.push([module.id, "/* prefix 영역 */\n.flex-box {\n  display: -webkit-box;\n  display: -moz-box;\n  display: -ms-flexbox;\n  display: -webkit-flex;\n  display: flex;\n  -webkit-flex-flow: row wrap;\n  justify-content: space-around;\n}\n/* prefix 영역 */\n* {\n  -webkit-user-select: none;\n  /* Chrome all / Safari all */\n  -moz-user-select: none;\n  /* Firefox all */\n  -ms-user-select: none;\n  /* IE 10+ */\n  user-select: none;\n  /* Likely future */\n}\nhtml,\nbody {\n  width: 100%;\n  height: 100%;\n  margin: 0;\n  padding: 0;\n  display: -webkit-box;\n  display: -moz-box;\n  display: -ms-flexbox;\n  display: -webkit-flex;\n  display: flex;\n  -webkit-flex-flow: row wrap;\n  justify-content: space-around;\n  justify-content: center;\n  align-items: center;\n}\n.game {\n  display: -webkit-box;\n  display: -moz-box;\n  display: -ms-flexbox;\n  display: -webkit-flex;\n  display: flex;\n  -webkit-flex-flow: row wrap;\n  justify-content: space-around;\n  width: 450px;\n}\n.box {\n  display: -webkit-box;\n  display: -moz-box;\n  display: -ms-flexbox;\n  display: -webkit-flex;\n  display: flex;\n  -webkit-flex-flow: row wrap;\n  justify-content: space-around;\n  width: 150px;\n  -moz-box-shadow: inset 0 0 1px #ccc;\n  -webkit-box-shadow: inset 0 0 1px #ccc;\n  box-shadow: inset 0 0 1px #ccc;\n}\n.cell {\n  cursor: pointer;\n  width: 50px;\n  height: 50px;\n  align-items: center;\n  display: flex;\n  justify-content: center;\n}\n.cell.fail {\n  box-shadow: inset 0 0 7px #f00;\n}\n.box:nth-child(even) {\n  background: #ccc;\n}\n.cell:nth-child(odd) {\n  background: rgba(1, 1, 1, 0.1);\n}\n", ""]);
 
 	// exports
 
