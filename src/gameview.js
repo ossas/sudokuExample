@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import Box from './box';
+import Button from './button';
 import './index.less';
 
 
@@ -38,7 +39,33 @@ export default class Gameview extends Component{
         return boxes;
     }
 
+
+    _inputButton() {
+        return (
+            <Button
+                ref={0}
+                key={1}
+                x = {0}
+                y = {0}
+                distance={10}
+                width={30}
+                height={30}
+                customStyle={{
+                    color: "#fff",
+                    textAlign:"center",
+                    lineHeight:"50px",
+                    backgroundColor: "#E74C3C",
+                    border: "solid 1px #E74C3C",
+                    borderRadius: "40%"
+                }}
+            >
+            </Button>);
+    }
+
     setValueEvent(cell) {
+        window.a = this.refs['0']
+        console.log(this.refs);
+        return;
         var value = Number(prompt('set'));
 
         if(value >= 1 && value <= 9) {
@@ -93,6 +120,7 @@ export default class Gameview extends Component{
 		return (
 			<div className='game' >
                 {this._makeGame()}
+                {this._inputButton()}
 			</div>
 		);
 	}
