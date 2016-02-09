@@ -9317,6 +9317,7 @@
 	 */
 	var EventInterface = {
 	  type: null,
+	  target: null,
 	  // currentTarget is set when dispatching; no use in copying it here
 	  currentTarget: emptyFunction.thatReturnsNull,
 	  eventPhase: null,
@@ -9350,8 +9351,6 @@
 	  this.dispatchConfig = dispatchConfig;
 	  this.dispatchMarker = dispatchMarker;
 	  this.nativeEvent = nativeEvent;
-	  this.target = nativeEventTarget;
-	  this.currentTarget = nativeEventTarget;
 
 	  var Interface = this.constructor.Interface;
 	  for (var propName in Interface) {
@@ -9362,7 +9361,11 @@
 	    if (normalize) {
 	      this[propName] = normalize(nativeEvent);
 	    } else {
-	      this[propName] = nativeEvent[propName];
+	      if (propName === 'target') {
+	        this.target = nativeEventTarget;
+	      } else {
+	        this[propName] = nativeEvent[propName];
+	      }
 	    }
 	  }
 
@@ -13211,7 +13214,10 @@
 	      }
 	    });
 
-	    nativeProps.children = content;
+	    if (content) {
+	      nativeProps.children = content;
+	    }
+
 	    return nativeProps;
 	  }
 
@@ -18684,7 +18690,7 @@
 
 	'use strict';
 
-	module.exports = '0.14.6';
+	module.exports = '0.14.7';
 
 /***/ },
 /* 147 */
@@ -19661,19 +19667,27 @@
 
 	'use strict';
 
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
 	Object.defineProperty(exports, "__esModule", {
 	    value: true
 	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 	var _react = __webpack_require__(1);
 
 	var _react2 = _interopRequireDefault(_react);
 
+	var _reactDom = __webpack_require__(158);
+
+	var _reactDom2 = _interopRequireDefault(_reactDom);
+
 	var _box = __webpack_require__(160);
 
 	var _box2 = _interopRequireDefault(_box);
+
+	var _button = __webpack_require__(166);
+
+	var _button2 = _interopRequireDefault(_button);
 
 	__webpack_require__(162);
 
@@ -19701,7 +19715,8 @@
 	        _this.state = {
 	            gameData: gameData,
 	            userData: cloneObject(gameData.data),
-	            failCells: []
+	            failCells: [],
+	            gameCnt: 0
 	        };
 	        return _this;
 	    }
@@ -19718,6 +19733,7 @@
 	                    key: i,
 	                    position: i,
 	                    data: this.state.gameData.data[i],
+	                    gameCnt: this.state.gameCnt,
 	                    event: boundClick
 	                }));
 	            }
@@ -19780,12 +19796,44 @@
 	            }
 	        }
 	    }, {
+	        key: '_makeButton',
+	        value: function _makeButton() {
+	            var buttons = [];
+	            var boundClick = this.doResetGame.bind(this);
+	            buttons.push(_react2.default.createElement(_button2.default, {
+	                key: 'reset',
+	                text: '재시작',
+	                'class': 'normal',
+	                event: boundClick
+	            }));
+
+	            return buttons;
+	        }
+	    }, {
+	        key: 'doResetGame',
+	        value: function doResetGame() {
+	            this.state.gameCnt++;
+	            var gameData = sdm.getGameData('random');
+	            this.setState({
+	                gameData: gameData,
+	                userData: cloneObject(gameData.data),
+	                failCells: []
+	            });
+
+	            this.forceUpdate();
+	        }
+	    }, {
 	        key: 'render',
 	        value: function render() {
 	            return _react2.default.createElement(
 	                'div',
 	                { className: 'game' },
-	                this._makeGame()
+	                this._makeGame(),
+	                _react2.default.createElement(
+	                    'div',
+	                    { className: 'button_area' },
+	                    this._makeButton()
+	                )
 	            );
 	        }
 	    }]);
@@ -19801,11 +19849,11 @@
 
 	'use strict';
 
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
 	Object.defineProperty(exports, "__esModule", {
 		value: true
 	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 	var _react = __webpack_require__(1);
 
@@ -19849,7 +19897,8 @@
 								_j: i,
 								_k: j,
 								value: this.props.data[i][j],
-								event: this.props.event
+								event: this.props.event,
+								gameCnt: this.props.gameCnt
 							},
 							i
 						));
@@ -19880,11 +19929,11 @@
 
 	'use strict';
 
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
 	Object.defineProperty(exports, "__esModule", {
 		value: true
 	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 	var _react = __webpack_require__(1);
 
@@ -19916,6 +19965,15 @@
 		}
 
 		_createClass(Cell, [{
+			key: 'shouldComponentUpdate',
+			value: function shouldComponentUpdate(nextProps, nextState) {
+				if (nextProps.gameCnt !== this.props.gameCnt) {
+					nextState.value = nextProps.value;
+					nextState.isFail = false;
+				}
+				return true;
+			}
+		}, {
 			key: 'getClassName',
 			value: function getClassName() {
 				var class_name = 'cell';
@@ -19989,7 +20047,7 @@
 
 
 	// module
-	exports.push([module.id, "/* prefix 영역 */\n.flex-box {\n  display: -webkit-box;\n  display: -moz-box;\n  display: -ms-flexbox;\n  display: -webkit-flex;\n  display: flex;\n  -webkit-flex-flow: row wrap;\n  justify-content: space-around;\n}\n/* prefix 영역 */\n* {\n  -webkit-user-select: none;\n  /* Chrome all / Safari all */\n  -moz-user-select: none;\n  /* Firefox all */\n  -ms-user-select: none;\n  /* IE 10+ */\n  user-select: none;\n  /* Likely future */\n}\nhtml,\nbody {\n  width: 100%;\n  height: 100%;\n  margin: 0;\n  padding: 0;\n  display: -webkit-box;\n  display: -moz-box;\n  display: -ms-flexbox;\n  display: -webkit-flex;\n  display: flex;\n  -webkit-flex-flow: row wrap;\n  justify-content: space-around;\n  justify-content: center;\n  align-items: center;\n}\n.game {\n  display: -webkit-box;\n  display: -moz-box;\n  display: -ms-flexbox;\n  display: -webkit-flex;\n  display: flex;\n  -webkit-flex-flow: row wrap;\n  justify-content: space-around;\n  width: 450px;\n}\n.box {\n  display: -webkit-box;\n  display: -moz-box;\n  display: -ms-flexbox;\n  display: -webkit-flex;\n  display: flex;\n  -webkit-flex-flow: row wrap;\n  justify-content: space-around;\n  width: 150px;\n  -moz-box-shadow: inset 0 0 1px #ccc;\n  -webkit-box-shadow: inset 0 0 1px #ccc;\n  box-shadow: inset 0 0 1px #ccc;\n}\n.cell {\n  cursor: pointer;\n  width: 50px;\n  height: 50px;\n  align-items: center;\n  display: flex;\n  justify-content: center;\n}\n.cell.fail {\n  box-shadow: inset 0 0 7px #f00;\n}\n.box:nth-child(even) {\n  background: #ccc;\n}\n.cell:nth-child(odd) {\n  background: rgba(1, 1, 1, 0.1);\n}\n", ""]);
+	exports.push([module.id, "/* prefix 영역 */\n.flex-box {\n  display: -webkit-box;\n  display: -moz-box;\n  display: -ms-flexbox;\n  display: -webkit-flex;\n  display: flex;\n  -webkit-flex-flow: row wrap;\n  justify-content: space-around;\n}\n/* prefix 영역 */\n* {\n  -webkit-user-select: none;\n  /* Chrome all / Safari all */\n  -moz-user-select: none;\n  /* Firefox all */\n  -ms-user-select: none;\n  /* IE 10+ */\n  user-select: none;\n  /* Likely future */\n}\nhtml,\nbody {\n  width: 100%;\n  height: 100%;\n  margin: 0;\n  padding: 0;\n  display: -webkit-box;\n  display: -moz-box;\n  display: -ms-flexbox;\n  display: -webkit-flex;\n  display: flex;\n  -webkit-flex-flow: row wrap;\n  justify-content: space-around;\n  justify-content: center;\n  align-items: center;\n}\n.game {\n  display: -webkit-box;\n  display: -moz-box;\n  display: -ms-flexbox;\n  display: -webkit-flex;\n  display: flex;\n  -webkit-flex-flow: row wrap;\n  justify-content: space-around;\n  width: 450px;\n}\n.box {\n  display: -webkit-box;\n  display: -moz-box;\n  display: -ms-flexbox;\n  display: -webkit-flex;\n  display: flex;\n  -webkit-flex-flow: row wrap;\n  justify-content: space-around;\n  width: 150px;\n  -moz-box-shadow: inset 0 0 1px #ccc;\n  -webkit-box-shadow: inset 0 0 1px #ccc;\n  box-shadow: inset 0 0 1px #ccc;\n}\n.cell {\n  cursor: pointer;\n  width: 50px;\n  height: 50px;\n  align-items: center;\n  display: flex;\n  justify-content: center;\n}\n.cell.fail {\n  box-shadow: inset 0 0 7px #f00;\n}\n.box:nth-child(even) {\n  background: #ccc;\n}\n.cell:nth-child(odd) {\n  background: rgba(1, 1, 1, 0.1);\n}\n.button_area .normal {\n  border-width: 2px;\n  border-color: black;\n}\n", ""]);
 
 	// exports
 
@@ -20303,6 +20361,55 @@
 			URL.revokeObjectURL(oldSrc);
 	}
 
+
+/***/ },
+/* 166 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var Button = function (_Component) {
+		_inherits(Button, _Component);
+
+		function Button(props) {
+			_classCallCheck(this, Button);
+
+			return _possibleConstructorReturn(this, Object.getPrototypeOf(Button).call(this, props));
+		}
+
+		_createClass(Button, [{
+			key: 'render',
+			value: function render() {
+				return _react2.default.createElement(
+					'div',
+					{ className: this.props.class, onClick: this.props.event },
+					this.props.text
+				);
+			}
+		}]);
+
+		return Button;
+	}(_react.Component);
+
+	exports.default = Button;
 
 /***/ }
 /******/ ]);
