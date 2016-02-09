@@ -95,13 +95,23 @@ export default class Gameview extends Component{
 
     _makeButton() {
         let buttons = [];
-        let boundClick = this.doResetGame.bind(this);
+        let boundClick = this.doNewGame.bind(this);
+        buttons.push(
+             <Button
+                key='new'
+                text='새게임'
+                class='normal'
+                event={boundClick}
+            >
+            </Button>
+        );
+        let boundClick2 = this.doResetGame.bind(this);
         buttons.push(
              <Button
                 key='reset'
-                text='재시작'
+                text='초기화'
                 class='normal'
-                event={boundClick}
+                event={boundClick2}
             >
             </Button>
         );
@@ -109,7 +119,7 @@ export default class Gameview extends Component{
         return buttons;
     }
 
-    doResetGame (){
+    doNewGame (){
         this.state.gameCnt++;
         let gameData = sdm.getGameData('random');
         this.setState({
@@ -117,6 +127,12 @@ export default class Gameview extends Component{
             userData: cloneObject(gameData.data),
             failCells: []
         });
+
+        this.forceUpdate();
+    }
+
+    doResetGame (){
+        this.state.gameCnt++;
 
         this.forceUpdate();
     }

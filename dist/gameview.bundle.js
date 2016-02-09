@@ -19799,19 +19799,26 @@
 	        key: '_makeButton',
 	        value: function _makeButton() {
 	            var buttons = [];
-	            var boundClick = this.doResetGame.bind(this);
+	            var boundClick = this.doNewGame.bind(this);
 	            buttons.push(_react2.default.createElement(_button2.default, {
-	                key: 'reset',
-	                text: '재시작',
+	                key: 'new',
+	                text: '새게임',
 	                'class': 'normal',
 	                event: boundClick
+	            }));
+	            var boundClick2 = this.doResetGame.bind(this);
+	            buttons.push(_react2.default.createElement(_button2.default, {
+	                key: 'reset',
+	                text: '초기화',
+	                'class': 'normal',
+	                event: boundClick2
 	            }));
 
 	            return buttons;
 	        }
 	    }, {
-	        key: 'doResetGame',
-	        value: function doResetGame() {
+	        key: 'doNewGame',
+	        value: function doNewGame() {
 	            this.state.gameCnt++;
 	            var gameData = sdm.getGameData('random');
 	            this.setState({
@@ -19819,6 +19826,13 @@
 	                userData: cloneObject(gameData.data),
 	                failCells: []
 	            });
+
+	            this.forceUpdate();
+	        }
+	    }, {
+	        key: 'doResetGame',
+	        value: function doResetGame() {
+	            this.state.gameCnt++;
 
 	            this.forceUpdate();
 	        }
@@ -20047,7 +20061,7 @@
 
 
 	// module
-	exports.push([module.id, "/* prefix 영역 */\n.flex-box {\n  display: -webkit-box;\n  display: -moz-box;\n  display: -ms-flexbox;\n  display: -webkit-flex;\n  display: flex;\n  -webkit-flex-flow: row wrap;\n  justify-content: space-around;\n}\n/* prefix 영역 */\n* {\n  -webkit-user-select: none;\n  /* Chrome all / Safari all */\n  -moz-user-select: none;\n  /* Firefox all */\n  -ms-user-select: none;\n  /* IE 10+ */\n  user-select: none;\n  /* Likely future */\n}\nhtml,\nbody {\n  width: 100%;\n  height: 100%;\n  margin: 0;\n  padding: 0;\n  display: -webkit-box;\n  display: -moz-box;\n  display: -ms-flexbox;\n  display: -webkit-flex;\n  display: flex;\n  -webkit-flex-flow: row wrap;\n  justify-content: space-around;\n  justify-content: center;\n  align-items: center;\n}\n.game {\n  display: -webkit-box;\n  display: -moz-box;\n  display: -ms-flexbox;\n  display: -webkit-flex;\n  display: flex;\n  -webkit-flex-flow: row wrap;\n  justify-content: space-around;\n  width: 450px;\n}\n.box {\n  display: -webkit-box;\n  display: -moz-box;\n  display: -ms-flexbox;\n  display: -webkit-flex;\n  display: flex;\n  -webkit-flex-flow: row wrap;\n  justify-content: space-around;\n  width: 150px;\n  -moz-box-shadow: inset 0 0 1px #ccc;\n  -webkit-box-shadow: inset 0 0 1px #ccc;\n  box-shadow: inset 0 0 1px #ccc;\n}\n.cell {\n  cursor: pointer;\n  width: 50px;\n  height: 50px;\n  align-items: center;\n  display: flex;\n  justify-content: center;\n}\n.cell.fail {\n  box-shadow: inset 0 0 7px #f00;\n}\n.box:nth-child(even) {\n  background: #ccc;\n}\n.cell:nth-child(odd) {\n  background: rgba(1, 1, 1, 0.1);\n}\n.button_area .normal {\n  border-width: 2px;\n  border-color: black;\n}\n", ""]);
+	exports.push([module.id, "/* prefix 영역 */\n.flex-box {\n  display: -webkit-box;\n  display: -moz-box;\n  display: -ms-flexbox;\n  display: -webkit-flex;\n  display: flex;\n  -webkit-flex-flow: row wrap;\n  justify-content: space-around;\n}\n/* prefix 영역 */\n* {\n  -webkit-user-select: none;\n  /* Chrome all / Safari all */\n  -moz-user-select: none;\n  /* Firefox all */\n  -ms-user-select: none;\n  /* IE 10+ */\n  user-select: none;\n  /* Likely future */\n}\nhtml,\nbody {\n  width: 100%;\n  height: 100%;\n  margin: 0;\n  padding: 0;\n  display: -webkit-box;\n  display: -moz-box;\n  display: -ms-flexbox;\n  display: -webkit-flex;\n  display: flex;\n  -webkit-flex-flow: row wrap;\n  justify-content: space-around;\n  justify-content: center;\n  align-items: center;\n}\n.game {\n  display: -webkit-box;\n  display: -moz-box;\n  display: -ms-flexbox;\n  display: -webkit-flex;\n  display: flex;\n  -webkit-flex-flow: row wrap;\n  justify-content: space-around;\n  width: 450px;\n}\n.box {\n  display: -webkit-box;\n  display: -moz-box;\n  display: -ms-flexbox;\n  display: -webkit-flex;\n  display: flex;\n  -webkit-flex-flow: row wrap;\n  justify-content: space-around;\n  width: 150px;\n  -moz-box-shadow: inset 0 0 1px #ccc;\n  -webkit-box-shadow: inset 0 0 1px #ccc;\n  box-shadow: inset 0 0 1px #ccc;\n}\n.cell {\n  cursor: pointer;\n  width: 50px;\n  height: 50px;\n  align-items: center;\n  display: flex;\n  justify-content: center;\n}\n.cell.fail {\n  box-shadow: inset 0 0 7px #f00;\n}\n.box:nth-child(even) {\n  background: #ccc;\n}\n.cell:nth-child(odd) {\n  background: rgba(1, 1, 1, 0.1);\n}\n.button_area .normal {\n  border: 1px solid blue;\n}\n", ""]);
 
 	// exports
 
