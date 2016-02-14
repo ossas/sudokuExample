@@ -19671,13 +19671,17 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
+	var _reactDom = __webpack_require__(158);
+
+	var _reactDom2 = _interopRequireDefault(_reactDom);
+
 	var _box = __webpack_require__(160);
 
 	var _box2 = _interopRequireDefault(_box);
 
-	var _button = __webpack_require__(166);
+	var _tile = __webpack_require__(166);
 
-	var _button2 = _interopRequireDefault(_button);
+	var _tile2 = _interopRequireDefault(_tile);
 
 	__webpack_require__(162);
 
@@ -19729,13 +19733,14 @@
 	            return boxes;
 	        }
 	    }, {
-	        key: '_inputButton',
-	        value: function _inputButton() {
-	            return _react2.default.createElement(_button2.default, {
-	                ref: 0,
+	        key: '_inputTile',
+	        value: function _inputTile() {
+	            return _react2.default.createElement(_tile2.default, {
+	                ref: 'inputTile',
 	                key: 1,
 	                x: 0,
 	                y: 0,
+	                setValue: this.setValue.bind(this),
 	                distance: 10,
 	                width: 30,
 	                height: 30,
@@ -19750,13 +19755,8 @@
 	            });
 	        }
 	    }, {
-	        key: 'setValueEvent',
-	        value: function setValueEvent(cell) {
-	            window.a = this.refs['0'];
-	            console.log(this.refs);
-	            return;
-	            var value = Number(prompt('set'));
-
+	        key: 'setValue',
+	        value: function setValue(value, cell) {
 	            if (value >= 1 && value <= 9) {
 	                cell.setState({
 	                    value: value
@@ -19808,13 +19808,21 @@
 	            }
 	        }
 	    }, {
+	        key: 'setValueEvent',
+	        value: function setValueEvent(cell) {
+	            var cellDom = _reactDom2.default.findDOMNode(cell);
+	            var tile = this.refs.inputTile;
+	            tile.reverse();
+	            tile.start(cellDom.offsetLeft, cellDom.offsetTop, null, cell);
+	        }
+	    }, {
 	        key: 'render',
 	        value: function render() {
 	            return _react2.default.createElement(
 	                'div',
 	                { className: 'game' },
 	                this._makeGame(),
-	                this._inputButton()
+	                this._inputTile()
 	            );
 	        }
 	    }]);
@@ -19918,6 +19926,10 @@
 	var _react = __webpack_require__(1);
 
 	var _react2 = _interopRequireDefault(_react);
+
+	var _reactDom = __webpack_require__(158);
+
+	var _reactDom2 = _interopRequireDefault(_reactDom);
 
 	__webpack_require__(162);
 
@@ -20365,44 +20377,62 @@
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-	var Button = function (_Component) {
-		_inherits(Button, _Component);
+	var Tile = function (_Component) {
+		_inherits(Tile, _Component);
 
-		function Button(props) {
-			_classCallCheck(this, Button);
+		function Tile(props) {
+			_classCallCheck(this, Tile);
 
-			var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Button).call(this, props));
+			var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Tile).call(this, props));
 
 			_this.timerIds = [null, null, null];
-			_this.state = { sequence: 0 };
-			var _this$props = _this.props;
-			var x = _this$props.x;
-			var y = _this$props.y;
-			var distance = _this$props.distance;
+			_this.state = {
+				sequence: 0,
+				x: _this.props.x,
+				y: _this.props.y,
+				distance: _this.props.distance,
+				cell: null
+			};
+
+			_this.coords = [{ top: -30, left: -30 }, { top: -30, left: 0 }, { top: -30, left: 30 }, { top: 0, left: -30 }, { top: 0, left: 0 }, { top: 0, left: 30 }, { top: 30, left: -30 }, { top: 30, left: 0 }, { top: 30, left: 30 }];
 
 			_this.params = [{
 				scaleX: (0, _reactMotion.spring)(0, [1500, 100]),
 				scaleY: (0, _reactMotion.spring)(0, [1500, 100]),
-				x: x,
-				y: (0, _reactMotion.spring)(y, [1500, 50])
+				x: _this.state.x,
+				y: (0, _reactMotion.spring)(_this.state.y, [1500, 50])
 			}, {
 				scaleX: (0, _reactMotion.spring)(0.7, [1500, 150]),
 				scaleY: (0, _reactMotion.spring)(1.6, [1500, 150]),
-				x: x,
-				y: (0, _reactMotion.spring)(y + distance, [1500, 100])
+				x: _this.state.x,
+				y: (0, _reactMotion.spring)(_this.state.y + _this.state.distance, [1500, 100])
 			}, {
 				scaleX: (0, _reactMotion.spring)(1, [1500, 18]),
 				scaleY: (0, _reactMotion.spring)(1, [1500, 18]),
-				x: x,
-				y: (0, _reactMotion.spring)(y + distance, [1500, 100])
+				x: _this.state.x,
+				y: (0, _reactMotion.spring)(_this.state.y + _this.state.distance, [1500, 100])
 			}];
 			return _this;
 		}
 
-		_createClass(Button, [{
+		_createClass(Tile, [{
+			key: 'getSpringParam',
+			value: function getSpringParam(sequence, i) {
+				var param = Object.assign({}, this.params[sequence]);
+				param.x = this.state.x;
+				param.y = this.state.y;
+
+				return param;
+			}
+		}, {
 			key: 'start',
-			value: function start() {
+			value: function start(x, y, distance, cell) {
 				var _this2 = this;
+
+				this.state.cell = cell;
+				this.state.x = x;
+				this.state.y = y;
+				this.state.distance = distance || this.state.distance;
 
 				this.timerIds[1] = setTimeout(function () {
 					_this2.setState({ sequence: 1 });
@@ -20429,45 +20459,74 @@
 				this.setState({ sequence: 0 });
 			}
 		}, {
+			key: 'clickTile',
+			value: function clickTile(dom) {
+				this.reverse();
+				this.props.setValue(Number(dom.target.textContent), this.state.cell);
+			}
+		}, {
+			key: '_makeTile',
+			value: function _makeTile(scaleX, scaleY, x, y) {
+				var _this4 = this;
+
+				var Tiles = [];
+
+				var _loop = function _loop(i) {
+					var coord = _this4.coords[i - 1];
+					Tiles.push(_react2.default.createElement(
+						_reactMotion.Motion,
+						{
+							key: i,
+							style: _this4.getSpringParam(_this4.state.sequence, i) },
+						function (_ref) {
+							var scaleX = _ref.scaleX;
+							var scaleY = _ref.scaleY;
+							var x = _ref.x;
+							var y = _ref.y;
+							return _react2.default.createElement(
+								'div',
+								{
+									style: (0, _Object2.default)({}, _this4.props.customStyle, {
+										top: coord.top,
+										left: coord.left,
+										transform: 'translate3d(' + x + 'px, ' + y + 'px, 0) scaleX(' + scaleX + ') scaleY(' + scaleY + ')',
+										WebkitTransform: 'translate3d(' + x + 'px, ' + y + 'px, 0) scaleX(' + scaleX + ') scaleY(' + scaleY + ')',
+										position: 'absolute',
+										width: _this4.props.width,
+										height: _this4.props.height
+									}),
+									onClick: _this4.clickTile.bind(_this4)
+								},
+								i
+							);
+						}
+					));
+				};
+
+				for (var i = 1; i <= 9; i++) {
+					_loop(i);
+				}
+
+				return Tiles;
+			}
+		}, {
 			key: 'render',
 			value: function render() {
-				var _props = this.props;
-				var width = _props.width;
-				var height = _props.height;
-				var customStyle = _props.customStyle;
-				var customClass = _props.customClass;
 
 				return _react2.default.createElement(
-					_reactMotion.Motion,
-					{ style: this.params[this.state.sequence] },
-					function (_ref) {
-						var scaleX = _ref.scaleX;
-						var scaleY = _ref.scaleY;
-						var x = _ref.x;
-						var y = _ref.y;
-						return _react2.default.createElement(
-							'div',
-							{
-								style: (0, _Object2.default)({}, customStyle, {
-									transform: 'translate3d(' + x + 'px, ' + y + 'px, 0) scaleX(' + scaleX + ') scaleY(' + scaleY + ')',
-									WebkitTransform: 'translate3d(' + x + 'px, ' + y + 'px, 0) scaleX(' + scaleX + ') scaleY(' + scaleY + ')',
-									position: 'absolute',
-									width: width,
-									height: height
-								}) },
-							'aa'
-						);
-					}
+					'div',
+					null,
+					this._makeTile()
 				);
 			}
 		}]);
 
-		return Button;
+		return Tile;
 	}(_react.Component);
 
-	exports.default = Button;
+	exports.default = Tile;
 
-	Button.propTypes = {
+	Tile.propTypes = {
 		x: _react.PropTypes.number.isRequired,
 		y: _react.PropTypes.number.isRequired,
 		distance: _react.PropTypes.number.isRequired,
@@ -20564,7 +20623,8 @@
 	    // TOOD: warn against putting a config in here
 	    defaultStyle: _react.PropTypes.objectOf(_react.PropTypes.number),
 	    style: _react.PropTypes.objectOf(_react.PropTypes.oneOfType([_react.PropTypes.number, _react.PropTypes.object])).isRequired,
-	    children: _react.PropTypes.func.isRequired
+	    children: _react.PropTypes.func.isRequired,
+	    onRest: _react.PropTypes.func
 	  },
 
 	  getInitialState: function getInitialState() {
@@ -20582,6 +20642,7 @@
 	    };
 	  },
 
+	  wasAnimating: false,
 	  animationID: null,
 	  prevTime: 0,
 	  accumulatedTime: 0,
@@ -20638,11 +20699,18 @@
 	      // check if we need to animate in the first place
 	      var propsStyle = _this.props.style;
 	      if (_shouldStopAnimation2['default'](_this.state.currentStyle, propsStyle, _this.state.currentVelocity)) {
+	        if (_this.wasAnimating && _this.props.onRest) {
+	          _this.props.onRest();
+	        }
+
 	        // no need to cancel animationID here; shouldn't have any in flight
 	        _this.animationID = null;
+	        _this.wasAnimating = false;
 	        _this.accumulatedTime = 0;
 	        return;
 	      }
+
+	      _this.wasAnimating = true;
 
 	      var currentTime = _performanceNow2['default']();
 	      var timeDelta = currentTime - _this.prevTime;
@@ -20782,7 +20850,7 @@
 
 	
 	// turn {x: {val: 1, stiffness: 1, damping: 2}, y: 2} generated by
-	// `{x: spring(1, [1, 2]), y: 2}` into {x: 1, y: 2}
+	// `{x: spring(1, {stiffness: 1, damping: 2}), y: 2}` into {x: 1, y: 2}
 
 	'use strict';
 
@@ -21312,9 +21380,15 @@
 
 	var msPerFrame = 1000 / 60;
 
+	// the children function & (potential) styles function asks as param an
+	// Array<TransitionPlainStyle>, where each TransitionPlainStyle is of the format
+	// {key: string, data?: any, style: PlainStyle}. However, the way we keep
+	// internal states doesn't contain such a data structure (check the state and
+	// TransitionMotionState). So when children function and others ask for such
+	// data we need to generate them on the fly by combining mergedPropsStyles and
+	// currentStyles/lastIdealStyles
 	function rehydrateStyles(mergedPropsStyles, unreadPropStyles, plainStyles) {
 	  if (unreadPropStyles == null) {
-	    // no stale props styles value
 	    // $FlowFixMe
 	    return mergedPropsStyles.map(function (mergedPropsStyle, i) {
 	      return {
@@ -21330,12 +21404,14 @@
 	      // $FlowFixMe
 	      if (unreadPropStyles[j].key === mergedPropsStyle.key) {
 	        return {
+	          // $FlowFixMe
 	          key: unreadPropStyles[j].key,
 	          data: unreadPropStyles[j].data,
 	          style: plainStyles[i]
 	        };
 	      }
 	    }
+	    // $FlowFixMe
 	    return { key: mergedPropsStyle.key, data: mergedPropsStyle.data, style: plainStyles[i] };
 	  });
 	}
@@ -21429,12 +21505,12 @@
 
 	  propTypes: {
 	    defaultStyles: _react.PropTypes.arrayOf(_react.PropTypes.shape({
-	      key: _react.PropTypes.any.isRequired,
+	      key: _react.PropTypes.string.isRequired,
 	      data: _react.PropTypes.any,
 	      style: _react.PropTypes.objectOf(_react.PropTypes.number).isRequired
 	    })),
 	    styles: _react.PropTypes.oneOfType([_react.PropTypes.func, _react.PropTypes.arrayOf(_react.PropTypes.shape({
-	      key: _react.PropTypes.any.isRequired,
+	      key: _react.PropTypes.string.isRequired,
 	      data: _react.PropTypes.any,
 	      style: _react.PropTypes.objectOf(_react.PropTypes.oneOfType([_react.PropTypes.number, _react.PropTypes.object])).isRequired
 	    }))]).isRequired,
@@ -21448,6 +21524,8 @@
 	      willEnter: function willEnter(styleThatEntered) {
 	        return _stripStyle2['default'](styleThatEntered.style);
 	      },
+	      // recall: returning null makes the current unmounting TransitionStyle
+	      // disappear immediately
 	      willLeave: function willLeave() {
 	        return null;
 	      }
@@ -21541,7 +21619,6 @@
 	    var lastIdealStyles = _mergeAndSync2[3];
 	    var lastIdealVelocities = _mergeAndSync2[4];
 
-	    var someDirty = false;
 	    for (var i = 0; i < unreadPropStyles.length; i++) {
 	      var unreadPropStyle = unreadPropStyles[i].style;
 	      var dirty = false;
@@ -21555,7 +21632,6 @@
 	        if (typeof styleValue === 'number') {
 	          if (!dirty) {
 	            dirty = true;
-	            someDirty = true;
 	            currentStyles[i] = _extends({}, currentStyles[i]);
 	            currentVelocities[i] = _extends({}, currentVelocities[i]);
 	            lastIdealStyles[i] = _extends({}, lastIdealStyles[i]);
@@ -21575,15 +21651,16 @@
 	      }
 	    }
 
-	    if (someDirty) {
-	      this.setState({
-	        currentStyles: currentStyles,
-	        currentVelocities: currentVelocities,
-	        mergedPropsStyles: mergedPropsStyles,
-	        lastIdealStyles: lastIdealStyles,
-	        lastIdealVelocities: lastIdealVelocities
-	      });
-	    }
+	    // unlike the other 2 components, we can't detect staleness and optionally
+	    // opt out of setState here. each style object's data might contain new
+	    // stuff we're not/cannot compare
+	    this.setState({
+	      currentStyles: currentStyles,
+	      currentVelocities: currentVelocities,
+	      mergedPropsStyles: mergedPropsStyles,
+	      lastIdealStyles: lastIdealStyles,
+	      lastIdealVelocities: lastIdealVelocities
+	    });
 	  },
 
 	  startAnimationIfNecessary: function startAnimationIfNecessary() {
@@ -21739,121 +21816,129 @@
 	exports['default'] = TransitionMotion;
 	module.exports = exports['default'];
 
+	// list of styles, each containing interpolating values. Part of what's passed
+	// to children function. Notice that this is
+	// Array<ActualInterpolatingStyleObject>, without the wrapper that is {key: ...,
+	// data: ... style: ActualInterpolatingStyleObject}. Only mergedPropsStyles
+	// contains the key & data info (so that we only have a single source of truth
+	// for these, and to save space). Check the comment for `rehydrateStyles` to
+	// see how we regenerate the entirety of what's passed to children function
+
+	// the array that keeps track of currently rendered stuff! Including stuff
+	// that you've unmounted but that's still animating. This is where it lives
+
 /***/ },
 /* 177 */
 /***/ function(module, exports) {
 
 	
 
-	// babel transforms the tail calls into loops
+	// core keys merging algorithm. If previous render's keys are [a, b], and the
+	// next render's [c, b, d], what's the final merged keys and ordering?
+
+	// - c and a must both be before b
+	// - b before d
+	// - ordering between a and c ambiguous
+
+	// this reduces to merging two partially ordered lists (e.g. lists where not
+	// every item has a definite ordering, like comparing a and c above). For the
+	// ambiguous ordering we deterministically choose to place the next render's
+	// item after the previous'; so c after a
+
+	// this is called a topological sorting. Except the existing algorithms don't
+	// work well with js bc of the amount of allocation, and isn't optimized for our
+	// current use-case bc the runtime is linear in terms of edges (see wiki for
+	// meaning), which is huge when two lists have many common elements
 	'use strict';
 
 	exports.__esModule = true;
 	exports['default'] = mergeDiff;
-	function mergeDiffArr(_x, _x2, _x3, _x4, _x5, _x6) {
-	  var _again = true;
-
-	  _function: while (_again) {
-	    var arrA = _x,
-	        arrB = _x2,
-	        indexA = _x3,
-	        indexB = _x4,
-	        onRemove = _x5,
-	        accum = _x6;
-	    _again = false;
-
-	    var endA = indexA === arrA.length;
-	    var endB = indexB === arrB.length;
-	    // const keyA = arrA[indexA].key;
-	    // const keyB = arrB[indexB].key;
-	    if (endA && endB) {
-	      return accum;
-	    }
-
-	    if (endA) {
-	      accum.push(arrB[indexB]);
-	      _x = arrA;
-	      _x2 = arrB;
-	      _x3 = indexA;
-	      _x4 = indexB + 1;
-	      _x5 = onRemove;
-	      _x6 = accum;
-	      _again = true;
-	      endA = endB = undefined;
-	      continue _function;
-	    }
-
-	    if (endB) {
-	      var fill = onRemove(indexA, arrA[indexA]);
-	      if (fill != null) {
-	        accum.push(fill);
-	      }
-	      _x = arrA;
-	      _x2 = arrB;
-	      _x3 = indexA + 1;
-	      _x4 = indexB;
-	      _x5 = onRemove;
-	      _x6 = accum;
-	      _again = true;
-	      endA = endB = fill = undefined;
-	      continue _function;
-	    }
-
-	    if (arrA[indexA].key === arrB[indexB].key) {
-	      accum.push(arrB[indexB]);
-	      _x = arrA;
-	      _x2 = arrB;
-	      _x3 = indexA + 1;
-	      _x4 = indexB + 1;
-	      _x5 = onRemove;
-	      _x6 = accum;
-	      _again = true;
-	      endA = endB = fill = undefined;
-	      continue _function;
-	    }
-
-	    // TODO: key search code
-	    var found = false;
-	    for (var i = indexB; i < arrB.length; i++) {
-	      if (arrB[i].key === arrA[indexA].key) {
-	        found = true;
-	        break;
-	      }
-	    }
-	    if (!found) {
-	      var fill = onRemove(indexA, arrA[indexA]);
-	      if (fill != null) {
-	        accum.push(fill);
-	      }
-	      _x = arrA;
-	      _x2 = arrB;
-	      _x3 = indexA + 1;
-	      _x4 = indexB;
-	      _x5 = onRemove;
-	      _x6 = accum;
-	      _again = true;
-	      endA = endB = fill = found = i = fill = undefined;
-	      continue _function;
-	    }
-
-	    // key a != key b, key a (old) not found in new arr (arr b)
-	    _x = arrA;
-	    _x2 = arrB;
-	    _x3 = indexA + 1;
-	    _x4 = indexB;
-	    _x5 = onRemove;
-	    _x6 = accum;
-	    _again = true;
-	    endA = endB = fill = found = i = fill = undefined;
-	    continue _function;
-	  }
-	}
 
 	function mergeDiff(prev, next, onRemove) {
-	  return mergeDiffArr(prev, next, 0, 0, onRemove, []);
+	  // bookkeeping for easier access of a key's index below. This is 2 allocations +
+	  // potentially triggering chrome hash map mode for objs (so it might be faster
+
+	  var prevKeyIndex = {};
+	  for (var i = 0; i < prev.length; i++) {
+	    prevKeyIndex[prev[i].key] = i;
+	  }
+	  var nextKeyIndex = {};
+	  for (var i = 0; i < next.length; i++) {
+	    nextKeyIndex[next[i].key] = i;
+	  }
+
+	  // first, an overly elaborate way of merging prev and next, eliminating
+	  // duplicates (in terms of keys). If there's dupe, keep the item in next).
+	  // This way of writing it saves allocations
+	  var ret = [];
+	  for (var i = 0; i < next.length; i++) {
+	    ret[i] = next[i];
+	  }
+	  for (var i = 0; i < prev.length; i++) {
+	    if (!nextKeyIndex.hasOwnProperty(prev[i].key)) {
+	      // this is called my TM's `mergeAndSync`, which calls willLeave. We don't
+	      // merge in keys that the user desires to kill
+	      var fill = onRemove(i, prev[i]);
+	      if (fill != null) {
+	        ret.push(fill);
+	      }
+	    }
+	  }
+
+	  // now all the items all present. Core sorting logic to have the right order
+	  return ret.sort(function (a, b) {
+	    var nextOrderA = nextKeyIndex[a.key];
+	    var nextOrderB = nextKeyIndex[b.key];
+	    var prevOrderA = prevKeyIndex[a.key];
+	    var prevOrderB = prevKeyIndex[b.key];
+
+	    if (nextOrderA != null && nextOrderB != null) {
+	      // both keys in next
+	      return nextKeyIndex[a.key] - nextKeyIndex[b.key];
+	    } else if (prevOrderA != null && prevOrderB != null) {
+	      // both keys in prev
+	      return prevKeyIndex[a.key] - prevKeyIndex[b.key];
+	    } else if (nextOrderA != null) {
+	      // key a in next, key b in prev
+
+	      // how to determine the order between a and b? We find a "pivot" (term
+	      // abuse), a key present in both prev and next, that is sandwiched between
+	      // a and b. In the context of our above example, if we're comparing a and
+	      // d, b's (the only) pivot
+	      for (var i = 0; i < next.length; i++) {
+	        var pivot = next[i].key;
+	        if (!prevKeyIndex.hasOwnProperty(pivot)) {
+	          continue;
+	        }
+
+	        if (nextOrderA < nextKeyIndex[pivot] && prevOrderB > prevKeyIndex[pivot]) {
+	          return -1;
+	        } else if (nextOrderA > nextKeyIndex[pivot] && prevOrderB < prevKeyIndex[pivot]) {
+	          return 1;
+	        }
+	      }
+	      // pluggable. default to: next bigger than prev
+	      return 1;
+	    }
+	    // prevOrderA, nextOrderB
+	    for (var i = 0; i < next.length; i++) {
+	      var pivot = next[i].key;
+	      if (!prevKeyIndex.hasOwnProperty(pivot)) {
+	        continue;
+	      }
+	      if (nextOrderB < nextKeyIndex[pivot] && prevOrderA > prevKeyIndex[pivot]) {
+	        return 1;
+	      } else if (nextOrderB > nextKeyIndex[pivot] && prevOrderA < prevKeyIndex[pivot]) {
+	        return -1;
+	      }
+	    }
+	    // pluggable. default to: next bigger than prev
+	    return -1;
+	  });
 	}
 
 	module.exports = exports['default'];
+	// to loop through and find a key's index each time), but I no longer care
 
 /***/ },
 /* 178 */

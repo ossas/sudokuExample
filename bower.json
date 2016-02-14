@@ -19,6 +19,7 @@
   ],
   "dependencies": {
     "react": "~0.14.6",
-    "sdoku_maker": "https://github.com/ossas/sdokuMaker.git#development"
+    "sdoku_maker": "https://github.com/ossas/sdokuMaker.git#development",
+    "react-motion": "~0.4.2"
   }
 }

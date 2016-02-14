@@ -1,8 +1,8 @@
 import React, {Component} from 'react';
+import ReactDom from 'react-dom';
 import Box from './box';
-import Button from './button';
+import Tile from './tile';
 import './index.less';
-
 
 function cloneObject(object) {
     return JSON.parse(JSON.stringify(object))
@@ -17,7 +17,7 @@ export default class Gameview extends Component{
             userData: cloneObject(gameData.data),
             failCells: []
         };
-    }    
+    }
 
     _makeGame() {
         let boxes = [];
@@ -40,13 +40,14 @@ export default class Gameview extends Component{
     }
 
 
-    _inputButton() {
+    _inputTile() {
         return (
-            <Button
-                ref={0}
+            <Tile
+                ref='inputTile'
                 key={1}
                 x = {0}
                 y = {0}
+                setValue = {this.setValue.bind(this)}
                 distance={10}
                 width={30}
                 height={30}
@@ -59,15 +60,10 @@ export default class Gameview extends Component{
                     borderRadius: "40%"
                 }}
             >
-            </Button>);
+            </Tile>);
     }
 
-    setValueEvent(cell) {
-        window.a = this.refs['0']
-        console.log(this.refs);
-        return;
-        var value = Number(prompt('set'));
-
+    setValue(value, cell) {
         if(value >= 1 && value <= 9) {
             cell.setState({
                 value : value
@@ -116,11 +112,18 @@ export default class Gameview extends Component{
         }
     }
 
+    setValueEvent(cell) {
+        let cellDom = ReactDom.findDOMNode(cell);
+        let tile = this.refs.inputTile;
+        tile.reverse();
+        tile.start(cellDom.offsetLeft, cellDom.offsetTop, null, cell);
+    }
+
 	render() {
 		return (
 			<div className='game' >
                 {this._makeGame()}
-                {this._inputButton()}
+                {this._inputTile()}
 			</div>
 		);
 	}
