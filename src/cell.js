@@ -10,6 +10,14 @@ export default class Cell extends Component{
 	    };
 	}
 
+	shouldComponentUpdate(nextProps, nextState) {
+		if(nextProps.gameCnt !== this.props.gameCnt) {
+			nextState.value = nextProps.value;
+			nextState.isFail = false;
+		}
+		return true;
+	}
+
 	getClassName() {
 		var class_name = 'cell';
 		if(this.state.isFail && !this.props.value) {

@@ -20,6 +20,7 @@ export default class Box extends Component{
 						_k= {j}
 						value={this.props.data[i][j]}
 						event={this.props.event}
+						gameCnt={this.props.gameCnt}
 					>
 						{i}
 					</Cell>
