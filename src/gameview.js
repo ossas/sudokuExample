@@ -1,5 +1,7 @@
 import React, {Component} from 'react';
+import ReactDom from 'react-dom';
 import Box from './box';
+import Button from './button';
 import './index.less';
 
 
@@ -14,7 +16,8 @@ export default class Gameview extends Component{
         this.state = {
             gameData: gameData,
             userData: cloneObject(gameData.data),
-            failCells: []
+            failCells: [],
+            gameCnt: 0
         };
     }    
 
@@ -29,6 +32,7 @@ export default class Gameview extends Component{
                     key={i}
                     position={i}
                     data={this.state.gameData.data[i]}
+                    gameCnt={this.state.gameCnt}
                     event={boundClick}
                 >
                 </Box>
@@ -89,10 +93,58 @@ export default class Gameview extends Component{
         }
     }
 
+    _makeButton() {
+        let buttons = [];
+        let boundClick = this.doNewGame.bind(this);
+        buttons.push(
+             <Button
+                key='new'
+                text='새게임'
+                class='normal'
+                event={boundClick}
+            >
+            </Button>
+        );
+        let boundClick2 = this.doResetGame.bind(this);
+        buttons.push(
+             <Button
+                key='reset'
+                text='초기화'
+                class='normal'
+                event={boundClick2}
+            >
+            </Button>
+        );
+
+        return buttons;
+    }
+
+    doNewGame (){
+        this.state.gameCnt++;
+        let gameData = sdm.getGameData('random');
+        this.setState({
+            gameData: gameData,
+            userData: cloneObject(gameData.data),
+            failCells: []
+        });
+
+        this.forceUpdate();
+    }
+
+    doResetGame (){
+        this.state.gameCnt++;
+
+        this.forceUpdate();
+    }
+
 	render() {
 		return (
 			<div className='game' >
                 {this._makeGame()}
+                <div className='button_area'>
+
+                    {this._makeButton()}
+                </div>
 			</div>
 		);
 	}
