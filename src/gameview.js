@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import ReactDom from 'react-dom';
+import sudokuMaker from 'sudokuMaker';
 import Box from './box';
 import Button from './button';
 import './index.less';
@@ -12,7 +13,8 @@ function cloneObject(object) {
 export default class Gameview extends Component{
     constructor() {
         super();
-        let gameData = sdm.getGameData('random');
+
+        let gameData = sudokuMaker.createGame('random');
         this.state = {
             gameData: gameData,
             userData: cloneObject(gameData.data),
@@ -52,8 +54,8 @@ export default class Gameview extends Component{
 
             let {_i, _j, _k} = cell.props;
             this.state.userData[_i][_j][_k] = value;
-
-            var check_data = sdm.gameDataCheck(this.state.userData);
+            
+            var check_data = sudokuMaker.gameDataCheck(this.state.userData);
 
             this.state.failCells.forEach(function (cell) {
                 cell.setState({
@@ -61,7 +63,7 @@ export default class Gameview extends Component{
                 });
             });
 
-            if(check_data.state === 'fail') {
+            if(check_data.state === 'FAIL') {
                 for(let key in check_data.box) {
                     var coord = check_data.box[key];
                     var cell = this.refs[coord._i].refs['' + coord._j + coord._k];
@@ -87,7 +89,7 @@ export default class Gameview extends Component{
                     this.state.failCells.push(cell);
                 }
 
-            } else if(check_data.state === 'complete') {
+            } else if(check_data.state === 'COMPLETE') {
                 alert('게임완료');
             }
         }
@@ -121,7 +123,7 @@ export default class Gameview extends Component{
 
     doNewGame (){
         this.state.gameCnt++;
-        let gameData = sdm.getGameData('random');
+        let gameData = sudokuMaker.createGame();
         this.setState({
             gameData: gameData,
             userData: cloneObject(gameData.data),

@@ -1,4 +1,4 @@
-# sdoku_example
-sdoku example
+# sudoku_example
+sudoku example
 
-using sdoku maker
+using sudoku maker
